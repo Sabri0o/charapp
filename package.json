@@ -1,0 +1,29 @@
+{
+  "name": "charapp",
+  "version": "1.0.0",
+  "description": "chat application with a sign-in system",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sabri0o/charapp.git"
+  },
+  "keywords": [
+    "chatapp",
+    "sign-in",
+    "engineTemplate",
+    "passport",
+    "socket.io"
+  ],
+  "author": "sabriOo project by freecodecamp",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sabri0o/charapp/issues"
+  },
+  "homepage": "https://github.com/Sabri0o/charapp#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
