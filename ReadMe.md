@@ -1,0 +1,2 @@
+* Pug:
+Pug is a template engine enables to use static template files. At runtime, the template engine replaces variables in a template file with actual values which can be supplied by the server. Then it transforms the template into a static HTML file that is sent to the client. This approach makes it easier to design an HTML page and allows for displaying variables on the page without needing to make an API call from the client.
