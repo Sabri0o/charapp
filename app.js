@@ -13,9 +13,9 @@ app.use('/public', express.static(__dirname + '/public'));
 //rendering the home page from the response.
 app.get("/", function (req, res) {
   // console.log(__dirname)
-  res.render(__dirname + "/views/pug/home.pug");
+  res.render(__dirname + "/views/pug/home.pug",{message_1:'Hello there',message_2:'nice to meet you'});
 });
 
-app.listen(3000, () => {
+app.listen(8000, () => {
   console.log("Listening on port 3000");
 });
