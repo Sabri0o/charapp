@@ -42,6 +42,14 @@ app.use(passport.initialize());
 
 app.use(passport.session());
 
+// middleware to check if the user is authenticated while requesting the profile url
+const ensureAuthenticated = function(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/');
+};
+
 myDb(async (client) => {
   const myDatabase = await client.db("charApp").collection("users");
 
@@ -62,6 +70,10 @@ myDb(async (client) => {
         res.redirect("/profile");
       }
     );
+  
+  app.route("/profile").get(ensureAuthenticated,function(req,res){
+    res.redirect(__dirname + 'views/pug/profile.pug')
+  })
 
   //Serialization
   passport.serializeUser((user, done) => {
@@ -102,4 +114,4 @@ myDb(async (client) => {
 
 app.listen(8000, () => {
   console.log("Listening on port 8000");
-});c
+});
