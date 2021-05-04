@@ -1,5 +1,5 @@
 // this link is helpful https://www.mongodb.com/blog/post/quick-start-nodejs-mongodb--how-to-get-connected-to-your-database  
-// Important: In MongoDB, a database is not created until it gets content! (really important)
+// Important: In MongoDB, a database is not created until it gets content! 
 
 require("dotenv").config();
 const { MongoClient } = require("mongodb");
