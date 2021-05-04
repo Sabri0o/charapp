@@ -11,3 +11,5 @@
 * Express-session is a middleware to handle sessions, it saves the session id as a cookie in the client and allows us to access the session data using that id on the server. This way we keep personal account information out of the cookie used by the client to verify to our server they are authenticated and just keep the key to access the data stored on the server.
 
 * Serialization and deserialization are important concepts in regards to authentication. To serialize an object means to convert its contents into a small key that can then be deserialized into the original object. This is what allows us to know who has communicated with the server without having to send the authentication data, like the username and password, at each request for a new page.
+
+* A strategy is a way of authenticating a user. For this project, we will set up a local strategy. To see a list of the hundreds of strategies, visit Passport's site

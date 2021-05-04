@@ -5,6 +5,7 @@ const myDatabase = require("./connection");
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
+const LocalStrategy = require("passport-local");
 
 // To make a query search for a Mongo _id, you will have to create
 //const ObjectID = require('mongodb').ObjectID;, and then to use it you call new ObjectID(THE_ID)
@@ -62,14 +63,32 @@ myDatabase(async (client) => {
       done(null, doc);
     });
   });
-}).catch(error=>{
-  app.get('/',(req,res)=>{
+  // authentication strategy: local strategy
+  passport.use(
+    new LocalStrategy(function (username, password, done) {
+      myDataBase.findOne({ username: username }, function (err, user) {
+        console.log("User " + username + " attempted to log in.");
+        if (err) {
+          return done(err);
+        }
+        if (!user) {
+          return done(null, false);
+        }
+        if (password !== user.password) {
+          return done(null, false);
+        }
+        return done(null, user);
+      });
+    })
+  );
+}).catch((error) => {
+  app.get("/", (req, res) => {
     res.render(__dirname + "/views/pug/home.pug", {
       message_1: "error",
       message_2: "unable log in",
     });
-  })
-})
+  });
+});
 
 app.listen(8000, () => {
   console.log("Listening on port 8000");
