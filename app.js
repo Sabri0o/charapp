@@ -1,7 +1,7 @@
 // Important: In MongoDB, a database is not created until it gets content!
 
 require("dotenv").config();
-const myDatabase = require("./connection");
+const myDb = require("./connection");
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
@@ -42,17 +42,27 @@ app.use(passport.initialize());
 
 app.use(passport.session());
 
-myDatabase(async (client) => {
+myDb(async (client) => {
   const myDatabase = await client.db("charApp").collection("users");
 
   //rendering the home page from the response.
-  app.get("/", function (req, res) {
-    // console.log(__dirname)
+  app.route("/").get(function (req, res) {
     res.render(__dirname + "/views/pug/home.pug", {
       message_1: "Hello there, nice to meet you",
       message_2: "please log in",
+      showlogin: true,
     });
   });
+
+  app
+    .route("/login")
+    .post(
+      passport.authenticate("local", { failureRedirect: "/" }),
+      function (req, res) {
+        res.redirect("/profile");
+      }
+    );
+
   //Serialization
   passport.serializeUser((user, done) => {
     done(null, user._id);
@@ -66,7 +76,7 @@ myDatabase(async (client) => {
   // authentication strategy: local strategy
   passport.use(
     new LocalStrategy(function (username, password, done) {
-      myDataBase.findOne({ username: username }, function (err, user) {
+      myDatabase.findOne({ username: username }, function (err, user) {
         console.log("User " + username + " attempted to log in.");
         if (err) {
           return done(err);
@@ -92,4 +102,4 @@ myDatabase(async (client) => {
 
 app.listen(8000, () => {
   console.log("Listening on port 8000");
-});
+});c
