@@ -62,6 +62,7 @@ myDb(async (client) => {
     });
   });
 
+//If the authentication (passport.authenticate) is successful, the user object will be saved in req.user
   app
     .route("/login")
     .post(
@@ -72,7 +73,8 @@ myDb(async (client) => {
     );
   
   app.route("/profile").get(ensureAuthenticated,function(req,res){
-    res.redirect(__dirname + 'views/pug/profile.pug')
+    //calling passport's isAuthenticated method on the request which, in turn, checks if req.user is defined
+    res.redirect(__dirname + 'views/pug/profile.pug',{username : req.user.username})
   })
 
   //Serialization
