@@ -43,11 +43,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // middleware to check if the user is authenticated while requesting the profile url
-const ensureAuthenticated = function(req, res, next) {
+const ensureAuthenticated = function (req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/');
+  res.redirect("/");
 };
 
 myDb(async (client) => {
@@ -62,7 +62,7 @@ myDb(async (client) => {
     });
   });
 
-//If the authentication (passport.authenticate) is successful, the user object will be saved in req.user
+  //If the authentication (passport.authenticate) is successful, the user object will be saved in req.user
   app
     .route("/login")
     .post(
@@ -71,18 +71,24 @@ myDb(async (client) => {
         res.redirect("/profile");
       }
     );
-  
-  app.route("/profile").get(ensureAuthenticated,function(req,res){
+
+  app.route("/profile").get(ensureAuthenticated, function (req, res) {
     //calling passport's isAuthenticated method on the request which, in turn, checks if req.user is defined
-    res.redirect(__dirname + 'views/pug/profile.pug',{username : req.user.username})
-  })
+    res.redirect(__dirname + "views/pug/profile.pug", {
+      username: req.user.username,
+    });
+  });
 
   // logout : In passport, unauthenticating a user is done by calling req.logout()
-  app.route('/logout').get(function(req,res){
-    req.logout()
-    res.redirect('/')
-  })
+  app.route("/logout").get(function (req, res) {
+    req.logout();
+    res.redirect("/");
+  });
 
+  //handling errors (missing pages)
+  app.use(function (req, res, next) {
+    res.status = (404).type("text").send("Not found");
+  });
   //Serialization
   passport.serializeUser((user, done) => {
     done(null, user._id);
