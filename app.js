@@ -45,6 +45,7 @@ app.use(passport.session());
 // middleware to check if the user is authenticated while requesting the profile url
 const ensureAuthenticated = function (req, res, next) {
   if (req.isAuthenticated()) {
+    console.log('authenticated')
     return next();
   }
   res.redirect("/");
@@ -75,8 +76,9 @@ myDb(async (client) => {
 
   app.route("/profile").get(ensureAuthenticated, function (req, res) {
     //calling passport's isAuthenticated method on the request which, in turn, checks if req.user is defined
-    res.redirect(__dirname + "views/pug/profile.pug", {
-      username: req.user.username,
+    console.log(req.user.username)
+    res.render(__dirname + "/views/pug/profile.pug", {
+      username: req.user.username
     });
   });
 
@@ -87,31 +89,44 @@ myDb(async (client) => {
   });
 
   // registraion route
+  // The logic of the registration route should be as follows:
+  // Register the new user >
+  // Authenticate the new user >
+  // Redirect to /profile
 
-  app.route("/register").post(function (req, res) {
-    myDatabase.findOne({ username: req.body.username }, function (err, doc) {
-      if (err) {
-        console.log("error", err.message);
-        res.redirect("/");
-      } else if (doc) {
-        console.log("user is already exist");
-      } else {
-        myDatabase.insertOne(
-          { username: req.body.username, password: req.body.password },
-          function (err, doc) {
-            if (err) {
-              console.log("error", err.message);
-              res.redirect("/");
-            } else {
-              console.log('registration processing...');
-              console.log(doc)
-              res.redirect('/profile')
+  app.route("/register").post(
+    function (req, res) {
+      myDatabase.findOne({ username: req.body.username }, function (err, doc,next) {
+        if (err) {
+          console.log("error", err.message);
+          // res.redirect("/");
+          next(err, null);
+        } else if (doc) {
+          console.log("user is already exist");
+          res.redirect('/')
+        } else {
+          myDatabase.insertOne(
+            { username: req.body.username, password: req.body.password },
+            function (err, doc) {
+              if (err) {
+                console.log("error", err.message);
+                res.redirect("/");
+              } else {
+                console.log("registration processing...");
+                console.log(doc.ops[0]);
+                // res.redirect("/profile");
+                next(null, doc.ops[0]);
+              }
             }
-          }
-        );
-      }
-    });
-  });
+          );
+        }
+      });
+    },
+    passport.authenticate("local", { failureRedirect: "/" }),
+    function (req, res) {
+      res.redirect("/profile");
+    }
+  );
 
   //handling errors (missing pages)
   app.use(function (req, res, next) {
