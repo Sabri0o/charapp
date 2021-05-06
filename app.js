@@ -77,6 +77,12 @@ myDb(async (client) => {
     res.redirect(__dirname + 'views/pug/profile.pug',{username : req.user.username})
   })
 
+  // logout : In passport, unauthenticating a user is done by calling req.logout()
+  app.route('/logout').get(function(req,res){
+    req.logout()
+    res.redirect('/')
+  })
+
   //Serialization
   passport.serializeUser((user, done) => {
     done(null, user._id);
