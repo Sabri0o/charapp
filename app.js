@@ -59,6 +59,7 @@ myDb(async (client) => {
       message_1: "Hello there, nice to meet you",
       message_2: "please log in",
       showlogin: true,
+      showRegisterForm: true
     });
   });
 
