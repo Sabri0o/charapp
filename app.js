@@ -59,7 +59,7 @@ myDb(async (client) => {
       message_1: "Hello there, nice to meet you",
       message_2: "please log in",
       showlogin: true,
-      showRegisterForm: true
+      showRegisterForm: true,
     });
   });
 
@@ -84,6 +84,33 @@ myDb(async (client) => {
   app.route("/logout").get(function (req, res) {
     req.logout();
     res.redirect("/");
+  });
+
+  // registraion route
+
+  app.route("/register").post(function (req, res) {
+    myDatabase.findOne({ username: req.body.username }, function (err, doc) {
+      if (err) {
+        console.log("error", err.message);
+        res.redirect("/");
+      } else if (doc) {
+        console.log("user is already exist");
+      } else {
+        myDatabase.insertOne(
+          { username: req.body.username, password: req.body.password },
+          function (err, doc) {
+            if (err) {
+              console.log("error", err.message);
+              res.redirect("/");
+            } else {
+              console.log('registration processing...');
+              console.log(doc)
+              res.redirect('/profile')
+            }
+          }
+        );
+      }
+    });
   });
 
   //handling errors (missing pages)
