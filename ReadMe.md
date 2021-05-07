@@ -12,4 +12,6 @@
 
 * Serialization and deserialization are important concepts in regards to authentication. To serialize an object means to convert its contents into a small key that can then be deserialized into the original object. This is what allows us to know who has communicated with the server without having to send the authentication data, like the username and password, at each request for a new page.
 
-* A strategy is a way of authenticating a user. For this project, we will set up a local strategy. To see a list of the hundreds of strategies, visit Passport's site
+* A strategy is a way of authenticating a user. For this project, we will set up a local strategy. To see a list of the hundreds of strategies, visit Passport's site.
+
+* storing plaintext passwords is never okay. BCrypt solve this issue.

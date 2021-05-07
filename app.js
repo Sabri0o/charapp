@@ -6,6 +6,7 @@ const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+const bcrypt = require('bcrypt')
 
 // To make a query search for a Mongo _id, you will have to create
 //const ObjectID = require('mongodb').ObjectID;, and then to use it you call new ObjectID(THE_ID)
@@ -105,8 +106,9 @@ myDb(async (client) => {
           console.log("user is already exist");
           res.redirect('/')
         } else {
+          const hash = bcrypt.hashSync(req.body.password)
           myDatabase.insertOne(
-            { username: req.body.username, password: req.body.password },
+            { username: req.body.username, password: bcrypt },
             function (err, doc) {
               if (err) {
                 console.log("error", err.message);
@@ -153,7 +155,7 @@ myDb(async (client) => {
         if (!user) {
           return done(null, false);
         }
-        if (password !== user.password) {
+        if (!bcrypt.compareSync(user.password,password)) {
           return done(null, false);
         }
         return done(null, user);
