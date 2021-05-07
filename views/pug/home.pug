@@ -32,3 +32,8 @@ html
         input(type='password', name='password')
       div
         input(type='submit', value='Register')
+    hr
+    if showSocialAuth
+    h2.center Social Login
+    .center 
+      a(href='/auth/github').text Login with Github!
