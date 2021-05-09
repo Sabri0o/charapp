@@ -33,9 +33,10 @@ module.exports = function (app, myDataBase) {
 
   app.route("/profile").get(ensureAuthenticated, function (req, res) {
     //calling passport's isAuthenticated method on the request which, in turn, checks if req.user is defined
-    console.log(req.user.username);
+    // console.log(req.user.username);
+    console.log('session id: ',req.session.id)
     res.render(__dirname + "/views/pug/profile.pug", {
-      username: req.user.username,
+      username: req.user.username || req.user.name,
     });
   });
 
@@ -50,7 +51,6 @@ module.exports = function (app, myDataBase) {
   // Register the new user >
   // Authenticate the new user >
   // Redirect to /profile
-
   app.route("/register").post(
     function (req, res, next) {
       myDataBase.findOne({ username: req.body.username }, function (err, doc) {
@@ -85,4 +85,10 @@ module.exports = function (app, myDataBase) {
       res.redirect("/profile");
     }
   );
+
+  app.route('/auth/github').get(passport.authenticate('github'))
+
+  app.route('/auth/github/callback').get(passport.authenticate('github',{failureRedirect:'/'}),function(req,res){
+      res.redirect('/profile')
+  })
 };

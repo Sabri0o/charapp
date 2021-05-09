@@ -47,7 +47,7 @@ myDb(async (client) => {
   auth(app, myDatabase);
   //handling errors (missing pages)
   app.use(function (req, res, next) {
-    res.status = (404).type("text").send("Not found");
+    res.status(404).type("text").send("Not found");
   });
 
 }).catch((error) => {

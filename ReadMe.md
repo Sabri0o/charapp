@@ -15,3 +15,13 @@
 * A strategy is a way of authenticating a user. For this project, we will set up a local strategy. To see a list of the hundreds of strategies, visit Passport's site.
 
 * storing plaintext passwords is never okay. BCrypt solve this issue.
+
+* Implementation of Social Authentication :
+ - User clicks a button or link sending them to our route to authenticate using a specific strategy (e.g. GitHub).
+ - the route calls passport.authenticate('github') which redirects them to GitHub.
+ - The page the user lands on, on GitHub, allows them to login if they aren't already. It then asks them to approve access to their profile from our app.
+ - The user is then returned to our app at a specific callback url with their profile if they are approved. They are now authenticated, and the app should check if it is a returning profile, or it will save it in the database if it is not.
+
+* Strategies with OAuth requires usto have at least a Client ID and a Client Secret which is a way for the service to verify who the authentication request is coming from and if it is valid.
+
+* 
