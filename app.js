@@ -34,10 +34,9 @@ app.use(
 app.use(passport.initialize());
 
 //passport.session() is middleware that alters the request object 
-//and change the session id (from the client cookie)
-//into the true deserialized user object.
+// and change the 'user' value that is currently the session id (from the client cookie) 
+// into the true deserialized user object.
 app.use(passport.session());
-
 
 myDb(async (client) => {
   const myDatabase = await client.db("charApp").collection("users");
@@ -49,7 +48,6 @@ myDb(async (client) => {
   app.use(function (req, res, next) {
     res.status(404).type("text").send("Not found");
   });
-
 }).catch((error) => {
   app.get("/", (req, res) => {
     res.render(__dirname + "/views/pug/home.pug", {

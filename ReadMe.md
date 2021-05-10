@@ -24,4 +24,4 @@
 
 * Strategies with OAuth requires usto have at least a Client ID and a Client Secret which is a way for the service to verify who the authentication request is coming from and if it is valid.
 
-* 
+* Socket.IO is a JavaScript library for real-time web applications. It enables real-time, bi-directional communication between web clients and servers. It has two parts: a client-side library that runs in the browser, and a server-side library for node.js. Both components have an identical API.

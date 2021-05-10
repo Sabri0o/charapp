@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 
 // middleware to check if the user is authenticated while requesting the profile url
 const ensureAuthenticated = function (req, res, next) {
+  console.log('****** passport ensureAuthenticated ******')
   if (req.isAuthenticated()) {
     console.log("authenticated");
     return next();
@@ -34,7 +35,8 @@ module.exports = function (app, myDataBase) {
   app.route("/profile").get(ensureAuthenticated, function (req, res) {
     //calling passport's isAuthenticated method on the request which, in turn, checks if req.user is defined
     // console.log(req.user.username);
-    console.log('session id: ',req.session.id)
+    console.log('sessionID',req.session.id)
+    console.log('****************************************************')
     res.render(__dirname + "/views/pug/profile.pug", {
       username: req.user.username || req.user.name,
     });

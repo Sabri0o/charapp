@@ -10,10 +10,14 @@ const ObjectID = require("mongodb").ObjectID;
 module.exports = function (app, myDataBase) {
   //Serialization
   passport.serializeUser((user, done) => {
+    console.log('****** passport serializeUser ******')
+    console.log('user: ',user)
     done(null, user._id);
   });
   //deserialization
   passport.deserializeUser((id, done) => {
+    console.log('****** passport deserializeUser ******')
+    console.log('id: ',id)
     myDataBase.findOne({ _id: new ObjectID(id) }, (err, doc) => {
       done(null, doc);
     });
@@ -21,6 +25,7 @@ module.exports = function (app, myDataBase) {
   // authentication strategy: local strategy
   passport.use(
     new LocalStrategy(function (username, password, done) {
+      console.log('****** passport LocalStrategy ******')
       myDataBase.findOne({ username: username }, function (err, user) {
         console.log("User " + username + " attempted to log in.");
         if (err) {
