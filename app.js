@@ -8,6 +8,9 @@ const passport = require("passport");
 const routes = require("./routes");
 const auth = require("./auth");
 const app = express();
+// creating http server
+const http = require('http').createServer(app)
+const io = require('socket')(http)
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -41,8 +44,13 @@ app.use(passport.session());
 myDb(async (client) => {
   const myDatabase = await client.db("charApp").collection("users");
 
-  routes(app, myDatabase);
+  // listening for a new connection from the client
+  // a socket here is an individual client who is connected.
+  io.on('connection', socket => {
+    console.log('A user has connected');
+  });
 
+  routes(app, myDatabase);
   auth(app, myDatabase);
   //handling errors (missing pages)
   app.use(function (req, res, next) {
@@ -57,6 +65,7 @@ myDb(async (client) => {
   });
 });
 
-app.listen(8000, () => {
+// since http server is mounted on the express app, we need to listen from the http server not app
+http.listen(8000, () => {
   console.log("Listening on port 8000");
 });
