@@ -88,9 +88,14 @@ module.exports = function (app, myDataBase) {
     }
   );
 
+  app.route('/chat').get(ensureAuthenticated, function(req,res){
+    res.render(__dirname + '/views/pug/chat.pug',{user:req.user})
+  })
+
   app.route('/auth/github').get(passport.authenticate('github'))
 
   app.route('/auth/github/callback').get(passport.authenticate('github',{failureRedirect:'/'}),function(req,res){
-      res.redirect('/profile')
+    req.session._id = req.user.id
+    res.redirect('/chat')
   })
 };
