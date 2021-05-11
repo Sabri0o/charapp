@@ -9,9 +9,17 @@ const routes = require("./routes");
 const auth = require("./auth");
 const app = express();
 // creating http server
-const http = require('http').createServer(app)
- // creating a new socket.io instance attached to the http server.
-const io = require('socket')(http)
+const http = require("http").createServer(app);
+// creating a new socket.io instance attached to the http server.
+const io = require("socket")(http);
+// Parse HTTP request cookies
+const cookieParser = require("cookie-parser");
+// MongoDB session store for Express
+const MongoStore = require("connect-mongo");
+const URI = process.env["MONGO_URI"];
+//Create a new connection from a MongoDB connection string
+const store = MongoStore.create({ mongoUrl: URI });
+const passportSocketIo = require("passport.socketio");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,14 +39,28 @@ app.use(
     resave: true,
     saveUninitialized: true,
     cookie: { secure: false },
+    key: "express.sid",
+    store: store,
+  })
+);
+
+// Access passport.js user information from a socket.io connection.
+io.use(
+  passportSocketIo.authorize({
+    cookieParser: cookieParser,
+    key: "express.sid",
+    secret: process.env.SESSION_SECRET,
+    store: store,
+    success: onAuthorizeSuccess,
+    fail: onAuthorizeFail,
   })
 );
 
 //passport.initialize() is a middle-ware that initialises Passport.
 app.use(passport.initialize());
 
-//passport.session() is middleware that alters the request object 
-// and change the 'user' value that is currently the session id (from the client cookie) 
+//passport.session() is middleware that alters the request object
+// and change the 'user' value that is currently the session id (from the client cookie)
 // into the true deserialized user object.
 app.use(passport.session());
 
@@ -47,18 +69,19 @@ myDb(async (client) => {
 
   // listening for a new connection from the client
   // a socket here is an individual client who is connected.
-  let currentUsers = 0
-  io.on('connection', socket => {
-    currentUsers += 1
-    console.log('A user has connected');
+  let currentUsers = 0;
+  io.on("connection", (socket) => {
+    currentUsers += 1;
+    console.log('user ' + socket.request.user.username + ' connected')
     // emitting the count to socket
-    io.on('user count',currentUsers)
+    io.on("user count", currentUsers);
     // listening for disconnection for each socket
-    socket.on('disconnect',()=>{
-      console.log('A user has disconnected')
-      currentUsers -= 1
-      io.emit('user count',currentUsers)
-    })
+    // disconnect listener
+    socket.on("disconnect", () => {
+      console.log('user ' + socket.request.user.username + ' disconnected')
+      currentUsers -= 1;
+      io.emit("user count", currentUsers);
+    });
   });
 
   routes(app, myDatabase);
@@ -75,6 +98,18 @@ myDb(async (client) => {
     });
   });
 });
+
+function onAuthorizeSuccess(data, accept) {
+  console.log("successful connection to socket.io");
+
+  accept(null, true);
+}
+
+function onAuthorizeFail(data, message, error, accept) {
+  if (error) throw new Error(message);
+  console.log("failed connection to socket.io:", message);
+  accept(null, false);
+}
 
 // since http server is mounted on the express app, we need to listen from the http server not app
 http.listen(8000, () => {
