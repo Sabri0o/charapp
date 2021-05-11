@@ -1,6 +1,8 @@
 $(document).ready(function () {
-    /*global io*/
+    /*global io*/ 
+    // client has connected to the server 
     let socket = io();
+    // clinet listen for user count
     socket.on('user count',data=>{
       console.log(data)
     })

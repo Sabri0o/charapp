@@ -53,6 +53,12 @@ myDb(async (client) => {
     console.log('A user has connected');
     // emitting the count to socket
     io.on('user count',currentUsers)
+    // listening for disconnection for each socket
+    socket.on('disconnect',()=>{
+      console.log('A user has disconnected')
+      currentUsers -= 1
+      io.emit('user count',currentUsers)
+    })
   });
 
   routes(app, myDatabase);
