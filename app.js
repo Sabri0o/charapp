@@ -10,6 +10,7 @@ const auth = require("./auth");
 const app = express();
 // creating http server
 const http = require('http').createServer(app)
+ // creating a new socket.io instance attached to the http server.
 const io = require('socket')(http)
 
 app.use(express.json());
@@ -46,8 +47,12 @@ myDb(async (client) => {
 
   // listening for a new connection from the client
   // a socket here is an individual client who is connected.
+  let currentUsers = 0
   io.on('connection', socket => {
+    currentUsers += 1
     console.log('A user has connected');
+    // emitting the count to socket
+    io.on('user count',currentUsers)
   });
 
   routes(app, myDatabase);
