@@ -74,13 +74,13 @@ myDb(async (client) => {
     currentUsers += 1;
     console.log('user ' + socket.request.user.username + ' connected')
     // emitting the count to socket
-    io.on("user count", currentUsers);
+    io.on("user", {name:socket.request.user.username,connected:true,currentUsers});
     // listening for disconnection for each socket
     // disconnect listener
     socket.on("disconnect", () => {
       console.log('user ' + socket.request.user.username + ' disconnected')
       currentUsers -= 1;
-      io.emit("user count", currentUsers);
+      io.emit("user", {name:socket.request.user.username,connected:true,currentUsers});
     });
   });
 
