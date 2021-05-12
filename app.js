@@ -72,15 +72,26 @@ myDb(async (client) => {
   let currentUsers = 0;
   io.on("connection", (socket) => {
     currentUsers += 1;
-    console.log('user ' + socket.request.user.username + ' connected')
+    console.log("user " + socket.request.user.username + " connected");
     // emitting the count to socket
-    io.on("user", {name:socket.request.user.username,connected:true,currentUsers});
+    io.on("user", {
+      name: socket.request.user.username,
+      connected: true,
+      currentUsers,
+    });
     // listening for disconnection for each socket
     // disconnect listener
+    socket.on("chat message", (message) => {
+      io.emit("chat message", { name: socket.request.user.name, message });
+    });
     socket.on("disconnect", () => {
-      console.log('user ' + socket.request.user.username + ' disconnected')
+      console.log("user " + socket.request.user.username + " disconnected");
       currentUsers -= 1;
-      io.emit("user", {name:socket.request.user.username,connected:true,currentUsers});
+      io.emit("user", {
+        name: socket.request.user.username,
+        connected: true,
+        currentUsers,
+      });
     });
   });
 
