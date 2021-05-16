@@ -1,20 +1,21 @@
 $(document).ready(function () {
-  /*global io*/
   // client has connected to the server
+  /*global io*/
   let socket = io();
-  // clinet listen for user count
-  socket.on("user count", (data) => {
+  // client listen for user count
+  socket.on("user", (data) => {
     console.log(data);
     $("#num-users").text(data.currentUsers + "users online");
-    let message =
-      data.name + data.connected
-        ? " has joined the chat"
-        : " has left the chat";
-    $("#messages").append("<li>" + message + "</li>");
+    let name = data.userName;
+    let connected = data.connected
+      ? " has joined the chat"
+      : " has left the chat";
+    let join = name + connected
+    $("#messages").append("<li>" + join + "</li>");
   });
-  socket.on("chat message", (message) => {
+  socket.on("chat message", (data) => {
     $("#messages").append(
-      "<li>" + message.name + ": " + message.message + "</li>"
+      "<li>" + data.userName + ": " + data.message + "</li>"
     );
   });
   // Form submittion with new message in field with id 'm'

@@ -11,7 +11,7 @@ const app = express();
 // creating http server
 const http = require("http").createServer(app);
 // creating a new socket.io instance attached to the http server.
-const io = require("socket")(http);
+const io = require("socket.io")(http);
 // Parse HTTP request cookies
 const cookieParser = require("cookie-parser");
 // MongoDB session store for Express
@@ -74,16 +74,16 @@ myDb(async (client) => {
     currentUsers += 1;
     console.log("user " + socket.request.user.username + " connected");
     // emitting the count to socket
-    io.on("user", {
-      name: socket.request.user.username,
+    io.emit("user", {
+      userName: socket.request.user.username,
       connected: true,
       currentUsers,
     });
     // listening for disconnection for each socket
-    // disconnect listener
-    socket.on("chat message", (message) => {
-      io.emit("chat message", { name: socket.request.user.name, message });
+    socket.on("chat message", (data) => {
+      io.emit("chat message", { userName: socket.request.user.username, message:data });
     });
+    // disconnect listener
     socket.on("disconnect", () => {
       console.log("user " + socket.request.user.username + " disconnected");
       currentUsers -= 1;
@@ -111,16 +111,17 @@ myDb(async (client) => {
 });
 
 function onAuthorizeSuccess(data, accept) {
-  console.log("successful connection to socket.io");
+  console.log('successful connection to socket.io');
 
   accept(null, true);
 }
 
 function onAuthorizeFail(data, message, error, accept) {
   if (error) throw new Error(message);
-  console.log("failed connection to socket.io:", message);
+  console.log('failed connection to socket.io:', message);
   accept(null, false);
 }
+
 
 // since http server is mounted on the express app, we need to listen from the http server not app
 http.listen(8000, () => {

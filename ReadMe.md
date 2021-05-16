@@ -1,3 +1,5 @@
+## Notes
+
 * Pug is a template engine enables to use static template files. At runtime, the template engine replaces variables in a template file with actual values which can be supplied by the server. Then it transforms the template into a static HTML file that is sent to the client. This approach makes it easier to design an HTML page and allows for displaying variables on the page without needing to make an API call from the client.
 
 * One of the greatest features of using a template engine is being able to pass variables from the server to the template file before rendering it to HTML.
@@ -17,16 +19,15 @@
 * storing plaintext passwords is never okay. BCrypt solve this issue.
 
 * Implementation of Social Authentication :
- - User clicks a button or link sending them to our route to authenticate using a specific strategy (e.g. GitHub).
- - the route calls passport.authenticate('github') which redirects them to GitHub.
- - The page the user lands on, on GitHub, allows them to login if they aren't already. It then asks them to approve access to their profile from our app.
- - The user is then returned to our app at a specific callback url with their profile if they are approved. They are now authenticated, and the app should check if it is a returning profile, or it will save it in the database if it is not.
+    - User clicks a button or link sending them to our route to authenticate using a specific strategy (e.g. GitHub).
+    - the route calls passport.authenticate('github') which redirects them to GitHub.
+    - The page the user lands on, on GitHub, allows them to login if they aren't already. It then asks them to approve access to their profile from our app.
+    - The user is then returned to our app at a specific callback url with their profile if they are approved. They are now authenticated, and the app should check if it is a returning profile, or it will save it in the database if it is not.
 
 * Strategies with OAuth requires usto have at least a Client ID and a Client Secret which is a way for the service to verify who the authentication request is coming from and if it is valid.
 
 * Socket.IO is a JavaScript library for real-time web applications. It enables real-time, bi-directional communication between web clients and servers. It has two parts: a client-side library that runs in the browser, and a server-side library for node.js. Both components have an identical API.
 
 * Authentication with Socket.Io:
- - We cannot determine who is connected to our web socket. While req.user contains the user object, that's only when the user interacts with the web server, and with web sockets there is no req (request) and therefore no user data. One way to solve the problem of knowing who is connected to the web socket is by parsing and decoding the cookie that contains the passport session then deserializing it to obtain the user object. Luckily, there is a package on NPM just for this that turns a once complex task into something simple! [passport.socketio : Access passport.js user information from a socket.io connection.](https://www.npmjs.com/package/passport.socketio), it requires a sessionstore. no memorystore. Instead of using the default MemoryStore to store session data, we need to find a way to store the data. There are many available session stores [listed](https://github.com/expressjs/session/blob/master/README.md#compatible-session-stores), and we can choose whatever we like. Since we are already using a Mongo database, lets take advantage and use that to store session data too. For that we can use the more popular [connect-mongo package](https://www.npmjs.com/package/connect-mongo) to connect to the database. After installing the package, we use the existing connection to the database.
-
- - Be sure to add the key and store to the session middleware mounted on the app. This is necessary to tell SocketIO which session to relate to.
+    - We cannot determine who is connected to our web socket. While req.user contains the user object, that's only when the user interacts with the web server, and with web sockets there is no req (request) and therefore no user data. One way to solve the problem of knowing who is connected to the web socket is by parsing and decoding the cookie that contains the passport session then deserializing it to obtain the user object. Luckily, there is a package on NPM just for this that turns a once complex task into something simple! [passport.socketio : Access passport.js user information from a socket.io connection.](https://www.npmjs.com/package/passport.socketio), it requires a sessionstore. no memorystore. Instead of using the default MemoryStore to store session data, we need to find a way to store the data. There are many available session stores [listed](https://github.com/expressjs/session/blob/master/README.md#compatible-session-stores), and we can choose whatever we like. Since we are already using a Mongo database, lets take advantage and use that to store session data too. For that we can use the more popular [connect-mongo package](https://www.npmjs.com/package/connect-mongo) to connect to the database. After installing the package, we use the existing connection to the database.
+    - Be sure to add the key and store to the session middleware mounted on the app. This is necessary to tell SocketIO which session to relate to.
